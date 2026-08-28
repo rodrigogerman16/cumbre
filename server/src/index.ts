@@ -9,7 +9,32 @@ import { HttpError } from './lib/http-error.js';
 
 const app = express();
 
-app.use(cors({ origin: process.env.CORS_ORIGIN ?? 'http://localhost:5173' }));
+const isProduction = process.env.NODE_ENV === 'production';
+const configuredOrigin = process.env.CORS_ORIGIN;
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      // Sin header Origin (curl, server-to-server, mismo origen): permitir.
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+      if (configuredOrigin && origin === configuredOrigin) {
+        callback(null, true);
+        return;
+      }
+      // En dev, Vite puede correr en otro puerto si el 5173 está ocupado
+      // (5174, 5175, ...) — aceptar cualquier localhost evita que el CORS
+      // rompa por eso. En producción esto queda desactivado.
+      if (!isProduction && /^https?:\/\/localhost:\d+$/.test(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error('Origen no permitido por CORS'));
+    },
+  }),
+);
 app.use(express.json());
 app.use(
   '/uploads',

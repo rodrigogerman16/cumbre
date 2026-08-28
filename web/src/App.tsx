@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { AppShell } from './components/AppShell';
 import { ComingSoon } from './components/ComingSoon';
 import { RequireAuth } from './components/RequireAuth';
+import { CreateRoutePage } from './pages/CreateRoutePage';
 import { FeedPage } from './pages/FeedPage';
 import { LoginPage } from './pages/LoginPage';
 import { ProfilePage } from './pages/ProfilePage';
@@ -27,7 +28,7 @@ function App() {
           path="/crear"
           element={
             <RequireAuth>
-              <ComingSoon title="Crear ruta" message="Dibujar rutas e importar GPX llega en la próxima fase." />
+              <CreateRoutePage />
             </RequireAuth>
           }
         />
