@@ -253,6 +253,14 @@ export function PencilIcon({ size = 18, ...props }: IconProps) {
   );
 }
 
+export function PlayIcon({ size = 20, ...props }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <polygon points="7,5 20,12 7,19" />
+    </svg>
+  );
+}
+
 export function PinIcon({ size = 17, ...props }: IconProps) {
   return (
     <svg

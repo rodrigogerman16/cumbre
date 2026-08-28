@@ -7,6 +7,7 @@ import { FeedPage } from './pages/FeedPage';
 import { LoginPage } from './pages/LoginPage';
 import { ProfilePage } from './pages/ProfilePage';
 import { RegisterPage } from './pages/RegisterPage';
+import { RouteDetailPage } from './pages/RouteDetailPage';
 
 function App() {
   return (
@@ -32,10 +33,7 @@ function App() {
             </RequireAuth>
           }
         />
-        <Route
-          path="/rutas/:id"
-          element={<ComingSoon title="Ruta" message="El detalle de la ruta llega en una próxima fase." />}
-        />
+        <Route path="/rutas/:id" element={<RouteDetailPage />} />
         <Route
           path="/explorar"
           element={<ComingSoon title="Explorar" message="Mapa general de rutas — próximamente." />}

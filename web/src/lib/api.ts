@@ -1,4 +1,4 @@
-import type { AuthUser, GeoPoint, Media, RouteSummary, Waypoint } from './types';
+import type { AuthUser, GeoPoint, Media, RouteDetail, RouteSummary, Waypoint } from './types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:4000';
 
@@ -79,6 +79,9 @@ export const api = {
     ).toString();
     return request<{ routes: RouteSummary[] }>('GET', `/routes${qs ? `?${qs}` : ''}`, { token });
   },
+
+  getRoute: (id: string, token?: string | null) =>
+    request<{ route: RouteDetail }>('GET', `/routes/${id}`, { token }),
 
   react: (routeId: string, token: string) =>
     request<{ reacted: boolean; count: number }>('POST', `/routes/${routeId}/react`, { token }),

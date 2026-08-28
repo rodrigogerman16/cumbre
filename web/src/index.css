@@ -664,3 +664,136 @@ select {
   max-height: 88vh;
   overflow-y: auto;
 }
+
+/* --- Route detail --- */
+.hero-map {
+  position: relative;
+}
+.icon-btn.on-image {
+  background: rgba(255, 255, 255, 0.92);
+  position: absolute;
+  /* Los controles de Leaflet (zoom, atribución) usan z-index:1000 */
+  z-index: 1001;
+}
+
+.day-badge-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+  overflow-x: auto;
+}
+.day-badge-row .pill {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.detail-stat-grid {
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--surface-alt);
+  border-radius: 14px;
+}
+
+.chip-row {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.chip {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 68px;
+  background: none;
+  border: none;
+}
+.chip-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.chip-icon.active {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+.chip-label {
+  font-size: 11px;
+  text-align: center;
+  line-height: 1.2;
+  color: var(--ink-soft);
+}
+
+.waypoint-detail-card {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+}
+.waypoint-detail-media {
+  width: 76px;
+  height: 76px;
+  object-fit: cover;
+  border-radius: 10px;
+  flex-shrink: 0;
+  display: block;
+}
+.waypoint-detail-media-fallback {
+  width: 76px;
+  height: 76px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.media-grid > img,
+.media-grid > div {
+  border-radius: 8px;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+  background: var(--surface-alt);
+}
+.media-grid-video-wrap {
+  position: relative;
+}
+.media-grid-video-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+}
+
+.detail-react-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 26px;
+  padding: 16px 20px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+.detail-react-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: none;
+  font-size: 14px;
+  font-weight: 700;
+}

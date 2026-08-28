@@ -4,17 +4,8 @@ import { useAuth } from '../lib/auth-context';
 import { api, ApiError } from '../lib/api';
 import type { RouteSummary } from '../lib/types';
 import { DIFFICULTY_COLOR, DIFFICULTY_LABEL, MountainFilledIcon, MountainOutlineIcon } from '../lib/icons';
+import { initials, pluralDias } from '../lib/format';
 import { RouteCoverArt } from './RouteCoverArt';
-
-function initials(name: string | undefined): string {
-  if (!name) return '?';
-  return name
-    .split(' ')
-    .map((p) => p[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
-}
 
 export function RouteCard({ route, index }: { route: RouteSummary; index: number }) {
   const { token } = useAuth();
@@ -24,7 +15,7 @@ export function RouteCard({ route, index }: { route: RouteSummary; index: number
   const [pending, setPending] = useState(false);
 
   const badge =
-    route.type === 'MULTI_DIA' ? `${route.stageCount} días · ${route.waypointCount} paradas` : null;
+    route.type === 'MULTI_DIA' ? `${pluralDias(route.stageCount)} · ${route.waypointCount} paradas` : null;
 
   async function handleReact(e: MouseEvent) {
     e.stopPropagation();
@@ -70,7 +61,7 @@ export function RouteCard({ route, index }: { route: RouteSummary; index: number
             <div className="stat-label">Desnivel</div>
           </div>
           <div className="stat">
-            <div className="stat-val">{route.type === 'MULTI_DIA' ? `${route.stageCount} días` : '1 día'}</div>
+            <div className="stat-val">{route.type === 'MULTI_DIA' ? pluralDias(route.stageCount) : '1 día'}</div>
             <div className="stat-label">Duración</div>
           </div>
           <div className="stat" style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
