@@ -131,5 +131,5 @@ Construcción por fases, cada una validada antes de pasar a la siguiente:
 - [x] Fase 2 — API de rutas, waypoints, media y reacciones
 - [x] Fase 3 — Frontend: shell, auth, feed
 - [x] Fase 4 — Frontend: mapa y creación de ruta
-- [ ] Fase 5 — Frontend: detalle de ruta
+- [x] Fase 5 — Frontend: detalle de ruta
 - [ ] Fase 6 — Pulido y despliegue
