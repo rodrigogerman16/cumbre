@@ -128,7 +128,7 @@ Construcción por fases, cada una validada antes de pasar a la siguiente:
 
 - [x] Fase 0 — Setup del monorepo
 - [x] Fase 1 — Base de datos y auth
-- [ ] Fase 2 — API de rutas, waypoints, media y reacciones
+- [x] Fase 2 — API de rutas, waypoints, media y reacciones
 - [ ] Fase 3 — Frontend: shell, auth, feed
 - [ ] Fase 4 — Frontend: mapa y creación de ruta
 - [ ] Fase 5 — Frontend: detalle de ruta
