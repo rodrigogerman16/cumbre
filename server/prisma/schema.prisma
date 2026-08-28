@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Dev: SQLite (zero setup). Prod: cambiar a "postgresql" (la URL de conexión
+// vive en prisma.config.ts, no acá — así lo pide Prisma 7).
+// El modelo de datos (models, enums, relaciones) es idéntico en ambos casos.
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime   @default(now())
+  routes       Route[]
+  reactions    Reaction[]
+}
+
+enum RouteType {
+  UN_DIA
+  MULTI_DIA
+}
+
+enum Difficulty {
+  FACIL
+  MEDIA
+  DIFICIL
+}
+
+model Route {
+  id             String     @id @default(cuid())
+  authorId       String
+  author         User       @relation(fields: [authorId], references: [id])
+  title          String
+  description    String
+  type           RouteType
+  difficulty     Difficulty
+  distanceKm     Float
+  elevationGainM Int
+  geometry       Json // LineString real: array de {lat, lng}
+  source         String     @default("manual") // "manual" | "gpx"
+  createdAt      DateTime   @default(now())
+  waypoints      Waypoint[]
+  media          Media[]
+  reactions      Reaction[]
+}
+
+enum WaypointType {
+  REFUGIO
+  AGUA
+  MIRADOR
+  PELIGRO
+  CAMPAMENTO
+  TECNICA
+}
+
+model Waypoint {
+  id          String       @id @default(cuid())
+  routeId     String
+  route       Route        @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  order       Int
+  lat         Float
+  lng         Float
+  kmMark      Float?
+  type        WaypointType
+  title       String
+  description String
+  isStageEnd  Boolean      @default(false) // fin de etapa/día -> agrupa la ruta en "Día N"
+  media       Media[]
+  createdAt   DateTime     @default(now())
+}
+
+enum MediaType {
+  PHOTO
+  VIDEO
+}
+
+enum ModerationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Media {
+  id               String           @id @default(cuid())
+  routeId          String
+  route            Route            @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  waypointId       String?
+  waypoint         Waypoint?        @relation(fields: [waypointId], references: [id], onDelete: Cascade)
+  url              String
+  type             MediaType
+  moderationStatus ModerationStatus @default(PENDING)
+  moderationReason String?
+  createdAt        DateTime         @default(now())
+}
+
+model Reaction {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  routeId   String
+  route     Route    @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, routeId])
+}
