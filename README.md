@@ -77,16 +77,13 @@ curl http://localhost:4000/health
 ## Base de datos: SQLite en dev, Postgres en producción
 
 El schema de Prisma (`server/prisma/schema.prisma`) es el mismo en ambos
-entornos — mismos modelos, enums y relaciones. Lo único que cambia al pasar
-a producción:
-
-1. `datasource db { provider = "postgresql" }` en `schema.prisma` (hoy dice
-   `"sqlite"`).
-2. `DATABASE_URL` en `server/.env` apuntando a la instancia de Postgres.
-3. En `server/src/lib/prisma.ts`, cambiar el driver adapter de
-   `@prisma/adapter-better-sqlite3` a `@prisma/adapter-pg` (misma
-   `DATABASE_URL`, misma forma de uso — el resto del código que usa
-   `prisma.*` no cambia).
+entornos — mismos modelos, enums y relaciones. `server/src/lib/prisma.ts`
+ya elige el driver solo, mirando `DATABASE_URL`: si empieza con `file:` usa
+SQLite (`@prisma/adapter-better-sqlite3`), si no, Postgres
+(`@prisma/adapter-pg`) — no hay que tocar código al pasar de un entorno a
+otro. Los pasos completos (incluyendo regenerar las migraciones para
+Postgres, que no son compatibles con las de SQLite) están en
+[`DEPLOY.md`](./DEPLOY.md).
 
 ## Storage de fotos/video
 
@@ -104,6 +101,12 @@ automáticamente sin llamar a ningún servicio externo. Configurando
 `MODERATION_MODE=sightengine` + `SIGHTENGINE_USER`/`SIGHTENGINE_SECRET` en
 `server/.env` se activa la llamada real a la API de Sightengine.
 
+## Despliegue
+
+Guía completa paso a paso (Vercel para `web/`, Render para `server/` +
+Postgres, Cloudflare R2 para media, Sightengine para moderación) en
+[`DEPLOY.md`](./DEPLOY.md).
+
 ## Estructura
 
 ```
@@ -119,6 +122,7 @@ cumbre-app/
 ├── web/              # React + Vite + TypeScript
 │   └── src/
 ├── prototype/        # prototipo original sin dependencias (referencia)
+├── DEPLOY.md         # guía de despliegue paso a paso
 └── package.json      # workspaces root
 ```
 
@@ -132,4 +136,4 @@ Construcción por fases, cada una validada antes de pasar a la siguiente:
 - [x] Fase 3 — Frontend: shell, auth, feed
 - [x] Fase 4 — Frontend: mapa y creación de ruta
 - [x] Fase 5 — Frontend: detalle de ruta
-- [ ] Fase 6 — Pulido y despliegue
+- [x] Fase 6 — Pulido y despliegue

@@ -104,6 +104,7 @@ export function CreateRoutePage() {
     }
 
     setPublishing(true);
+    let createdRouteId: string | null = null;
     try {
       const { route } = await api.createRoute(
         {
@@ -118,6 +119,7 @@ export function CreateRoutePage() {
         },
         token,
       );
+      createdRouteId = route.id;
 
       for (let i = 0; i < waypoints.length; i++) {
         const w = waypoints[i];
@@ -145,7 +147,15 @@ export function CreateRoutePage() {
 
       navigate(`/rutas/${route.id}`);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'No se pudo publicar la ruta');
+      const message = err instanceof ApiError ? err.message : 'No se pudo publicar la ruta';
+      // La ruta ya se creó en el servidor antes de que fallara un waypoint o
+      // una foto: avisamos en vez de dejar creer que no se guardó nada (lo
+      // que llevaría a publicarla de nuevo, duplicada).
+      setError(
+        createdRouteId
+          ? `${message}. La ruta ya se creó (algunas paradas o fotos pueden faltar) — podés verla y reintentar la subida más tarde.`
+          : message,
+      );
       setPublishing(false);
     }
   }

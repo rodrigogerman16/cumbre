@@ -132,7 +132,16 @@ export function RouteDetailPage() {
   }
 
   if (!route) {
-    return <div className="loading">Cargando ruta…</div>;
+    return (
+      <>
+        <div className="topbar">
+          <button className="icon-btn" onClick={() => navigate(-1)}>
+            <BackIcon size={18} color="var(--ink)" />
+          </button>
+        </div>
+        <div className="loading">Cargando ruta…</div>
+      </>
+    );
   }
 
   const dayGroups = route.type === 'MULTI_DIA' ? groupWaypointsByDay(route.waypoints) : null;
