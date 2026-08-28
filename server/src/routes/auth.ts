@@ -2,13 +2,10 @@ import { Router } from 'express';
 import { z } from 'zod';
 import { prisma } from '../lib/prisma.js';
 import { hashPassword, signToken, verifyPassword } from '../lib/auth.js';
+import { toPublicUser } from '../lib/serializers.js';
 import { type AuthedRequest, requireAuth } from '../middleware/auth.js';
 
 const router = Router();
-
-function toPublicUser(user: { id: string; email: string; name: string }) {
-  return { id: user.id, email: user.email, name: user.name };
-}
 
 const registerSchema = z.object({
   email: z.string().trim().toLowerCase().email(),

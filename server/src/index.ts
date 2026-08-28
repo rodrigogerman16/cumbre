@@ -1,8 +1,11 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import multer from 'multer';
 import path from 'node:path';
 import authRouter from './routes/auth.js';
+import routesRouter from './routes/routes.js';
+import { HttpError } from './lib/http-error.js';
 
 const app = express();
 
@@ -18,8 +21,17 @@ app.get('/health', (_req, res) => {
 });
 
 app.use('/auth', authRouter);
+app.use('/routes', routesRouter);
 
 app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  if (err instanceof HttpError) {
+    res.status(err.status).json({ error: err.message, details: err.details });
+    return;
+  }
+  if (err instanceof multer.MulterError) {
+    res.status(err.code === 'LIMIT_FILE_SIZE' ? 413 : 400).json({ error: err.message });
+    return;
+  }
   if (err instanceof SyntaxError && 'body' in err) {
     res.status(400).json({ error: 'JSON inválido' });
     return;
