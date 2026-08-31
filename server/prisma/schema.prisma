@@ -2,11 +2,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// Dev: SQLite (zero setup). Prod: cambiar a "postgresql" (la URL de conexión
-// vive en prisma.config.ts, no acá — así lo pide Prisma 7).
-// El modelo de datos (models, enums, relaciones) es idéntico en ambos casos.
+// Postgres (Supabase en este proyecto). La URL de conexión vive en
+// prisma.config.ts (Prisma 7) y en DATABASE_URL, no acá.
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 model User {

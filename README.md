@@ -19,7 +19,9 @@ Monorepo con dos paquetes npm workspace:
 
 - Node.js 20+ (probado con Node 22).
 - npm 10+.
-- No hace falta Postgres ni Docker para desarrollar: en dev se usa SQLite.
+- Una base Postgres (dev y prod usan el mismo motor). La más simple para
+  arrancar es un proyecto gratuito en [Supabase](https://supabase.com) —
+  no hace falta instalar Postgres localmente.
 
 ## Instalación
 
@@ -41,15 +43,26 @@ cp server/.env.example server/.env
 cp web/.env.example web/.env.local
 ```
 
-Los valores por defecto ya funcionan para desarrollo local (SQLite,
-moderación en modo `stub`, JWT con secreto de dev). Ver el detalle de cada
-variable en los propios `.env.example`.
+La mayoría de los valores por defecto ya funcionan para desarrollo local
+(moderación en modo `stub`, JWT con secreto de dev) — la excepción es
+`DATABASE_URL`, que tenés que completar con tu propia base Postgres (ver
+abajo). Ver el detalle de cada variable en los propios `.env.example`.
 
 ### Base de datos
 
-```bash
-npm run prisma:migrate   # crea/actualiza server/prisma/dev.db (SQLite)
-```
+1. Creá un proyecto Postgres gratuito en [Supabase](https://supabase.com)
+   (o usá cualquier otro Postgres que tengas a mano).
+2. Copiá la connection string de **Settings → Database → Connection
+   string → URI**, pestaña **Session pooler** (no "Direct connection": esa
+   suele resolver solo por IPv6 y da timeout en redes sin salida IPv6; el
+   "Transaction pooler" tampoco sirve porque no soporta las prepared
+   statements que necesitan las migraciones).
+3. Pegala en `server/.env` como `DATABASE_URL`.
+4. Aplicá el schema:
+
+   ```bash
+   npm run prisma:migrate
+   ```
 
 ## Correr en desarrollo
 
@@ -74,16 +87,15 @@ curl http://localhost:4000/health
 # {"ok":true,"service":"cumbre-server"}
 ```
 
-## Base de datos: SQLite en dev, Postgres en producción
+## Base de datos
 
-El schema de Prisma (`server/prisma/schema.prisma`) es el mismo en ambos
-entornos — mismos modelos, enums y relaciones. `server/src/lib/prisma.ts`
-ya elige el driver solo, mirando `DATABASE_URL`: si empieza con `file:` usa
-SQLite (`@prisma/adapter-better-sqlite3`), si no, Postgres
-(`@prisma/adapter-pg`) — no hay que tocar código al pasar de un entorno a
-otro. Los pasos completos (incluyendo regenerar las migraciones para
-Postgres, que no son compatibles con las de SQLite) están en
-[`DEPLOY.md`](./DEPLOY.md).
+Dev y producción usan el mismo motor (Postgres) y el mismo
+`server/prisma/schema.prisma` — solo cambia a qué base apunta
+`DATABASE_URL`. `server/src/lib/prisma.ts` elige el driver correcto
+(`@prisma/adapter-pg`, o `@prisma/adapter-better-sqlite3` si alguna vez
+volvés a SQLite) mirando el prefijo de esa variable, así que no hay que
+tocar código al cambiar de entorno. Los pasos de despliegue completos
+están en [`DEPLOY.md`](./DEPLOY.md).
 
 ## Storage de fotos/video
 
